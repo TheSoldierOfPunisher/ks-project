@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "~/lib/server/db/index.server";
 import { repositories } from "~/lib/server/db/schema/repository.sql";
 import { users } from "~/lib/server/db/schema/user.sql";
@@ -27,12 +27,12 @@ const repositoryByNamePrepared = db
     users,
     and(
       eq(repositories.creator_id, users.id),
-      eq(users.username, sql.placeholder("owner_username"))
+      ilike(users.username, sql.placeholder("owner_username"))
     )
   )
   .where(
     and(
-      eq(repositories.name, sql.placeholder("repository_name")),
+      ilike(repositories.name, sql.placeholder("repository_name")),
       eq(repositories.is_public, true) // TODO : remove this condition when visibility is correctly implemented
     )
   )
