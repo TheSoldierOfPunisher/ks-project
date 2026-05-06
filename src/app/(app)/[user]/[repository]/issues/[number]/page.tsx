@@ -9,6 +9,8 @@ import { notFound } from "next/navigation";
 import { preprocess, z } from "zod";
 import { CacheKeys } from "~/lib/shared/cache-keys.shared";
 import { getSingleIssue } from "~/models/issues";
+import { CommentList } from "~/components/comments/comment-list";
+import { CommentForm } from "~/components/comments/comment-form";
 
 // types
 import type { Metadata } from "next";
@@ -113,6 +115,26 @@ export default async function IssueDetailPage({
 `}
           />
         </Cache> */}
+      </section>
+
+      <section className="px-5 flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">Comments</h2>
+        <CommentForm
+          issueId={issue.id}
+          pathname={`/${user}/${repo}/issues/${issueNo}`}
+          renderMarkdownAction={async (content, repositoryPath) => {
+            "use server";
+            return <Markdown content={content} repository={repositoryPath} />;
+          }}
+        />
+        <CommentList
+          issueId={issue.id}
+          pathname={`/${user}/${repo}/issues/${issueNo}`}
+          renderMarkdownAction={async (content, repositoryPath) => {
+            "use server";
+            return <Markdown content={content} repository={repositoryPath} />;
+          }}
+        />
       </section>
     </div>
   );

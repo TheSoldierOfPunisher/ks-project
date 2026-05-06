@@ -27,12 +27,12 @@ const repositoryByNamePrepared = db
     users,
     and(
       eq(repositories.creator_id, users.id),
-      eq(users.username, sql.placeholder("owner_username"))
+      sql`lower(${users.username}) = lower(${sql.placeholder("owner_username")})`
     )
   )
   .where(
     and(
-      eq(repositories.name, sql.placeholder("repository_name")),
+      sql`lower(${repositories.name}) = lower(${sql.placeholder("repository_name")})`,
       eq(repositories.is_public, true) // TODO : remove this condition when visibility is correctly implemented
     )
   )

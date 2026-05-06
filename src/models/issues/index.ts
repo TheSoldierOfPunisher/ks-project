@@ -121,6 +121,7 @@ const creator = alias(users, "creator");
 
 const singleIssuePrepared = db
   .select({
+    id: issues.id,
     title: issues.title,
     body: issues.body,
     updated_at: issues.updated_at,
