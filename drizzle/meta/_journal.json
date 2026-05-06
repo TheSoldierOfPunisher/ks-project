@@ -533,6 +533,13 @@
       "when": 1700856216160,
       "tag": "0075_volatile_harry_osborn",
       "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "5",
+      "when": 1778091312443,
+      "tag": "0076_windy_jackal",
+      "breakpoints": true
     }
   ]
 }

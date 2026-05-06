@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "~/lib/server/db/index.server";
 import { repositories } from "~/lib/server/db/schema/repository.sql";
 import { users } from "~/lib/server/db/schema/user.sql";

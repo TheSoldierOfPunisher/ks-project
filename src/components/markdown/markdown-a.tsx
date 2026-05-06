@@ -13,7 +13,7 @@ import { IssueHoverCardLink } from "~/components/hovercard/issue-hovercard-link"
 import Link from "next/link";
 
 // utils
-import { env } from "~/env";
+
 import { clsx, getExcerpt, isValidURL } from "~/lib/shared/utils.shared";
 import { z } from "zod";
 
@@ -40,8 +40,8 @@ export async function MarkdownA({
   let referenceFound: Reference | null = null;
   if (props.href) {
     try {
-      const url = new URL(props.href, env.NEXT_PUBLIC_VERCEL_URL);
-      const baseURL = new URL(env.NEXT_PUBLIC_VERCEL_URL);
+      const url = new URL(props.href, process.env.NEXT_PUBLIC_VERCEL_URL);
+      const baseURL = new URL(process.env.NEXT_PUBLIC_VERCEL_URL);
       isExternal = url.hostname !== baseURL.hostname;
 
       const parseResult = ReferenceSchema.safeParse(
@@ -218,3 +218,5 @@ const ReferenceSchema = z.union([
 ]);
 
 export type Reference = z.TypeOf<typeof ReferenceSchema>;
+
+
