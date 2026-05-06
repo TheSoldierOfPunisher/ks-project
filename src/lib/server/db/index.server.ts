@@ -25,6 +25,7 @@ import {
 } from "./schema/comment.sql";
 import { issueEvents, issueEventsRelations } from "./schema/event.sql";
 import { reactions, reactionsRelations } from "./schema/reaction.sql";
+import { notifications, notificationsRelations } from "./schema/notification.sql";
 import { env } from "~/env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
@@ -49,6 +50,7 @@ export const db = drizzle(pool, {
     issueEvents,
     issueUserSubscriptions,
     issueMentions: issueUserMentions,
+    notifications,
     // relations
     issueUserSubscriptionRelations,
     issueEventsRelations,
@@ -60,6 +62,7 @@ export const db = drizzle(pool, {
     labelToIssuesRelations,
     commentsRelations,
     reactionsRelations,
-    issueMentionsRelations
+    issueMentionsRelations,
+    notificationsRelations
   }
 });
