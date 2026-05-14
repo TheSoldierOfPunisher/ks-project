@@ -114,7 +114,7 @@ export const reactionsRelations = relations(reactions, ({ one }) => ({
     relationName: "issue"
   }),
   comment: one(comments, {
-    fields: [reactions.issue_id],
+    fields: [reactions.comment_id],
     references: [comments.id],
     relationName: "comment"
   })
