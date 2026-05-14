@@ -100,7 +100,7 @@ export async function updateUserTheme(newTheme: Theme, id: number) {
 export const githubUserSchema = z.object({
   login: z.string(),
   id: z.number(),
-  name: z.string(),
+  name: z.string().nullish(),
   avatar_url: z.string(),
   location: z.string().nullish(),
   bio: z.string().nullish()
