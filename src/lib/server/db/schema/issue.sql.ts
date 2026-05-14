@@ -180,19 +180,28 @@ export const issueRevisionsRelations = relations(issueRevisions, ({ one }) => ({
   })
 }));
 
-export const issueUserSubscriptions = pgTable("issue_user_subscriptions", {
-  id: serial("id").primaryKey(),
-  user_id: integer("user_id")
-    .references(() => users.id, {
-      onDelete: "cascade"
-    })
-    .notNull(),
-  issue_id: integer("issue_id")
-    .references(() => issues.id, {
-      onDelete: "cascade"
-    })
-    .notNull()
-});
+export const issueUserSubscriptions = pgTable(
+  "issue_user_subscriptions",
+  {
+    id: serial("id").primaryKey(),
+    user_id: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade"
+      })
+      .notNull(),
+    issue_id: integer("issue_id")
+      .references(() => issues.id, {
+        onDelete: "cascade"
+      })
+      .notNull()
+  },
+  (table) => ({
+    issueUserUniqueIdx: unique("issue_user_sub_unique_idx").on(
+      table.issue_id,
+      table.user_id
+    )
+  })
+);
 
 export const issueUserSubscriptionRelations = relations(
   issueUserSubscriptions,

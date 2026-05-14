@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 import { Input } from "~/components/input";
 import { Button } from "~/components/button";
+import { getNotifications } from "~/actions/notification.action";
+import { NotificationBadge } from "~/components/notifications/notification-badge";
 
 import {
   UserDropdown,
@@ -32,6 +34,8 @@ export type HeaderProps = {
 
 export async function Header({ children, pageTitle }: HeaderProps) {
   const { user } = await getSession();
+
+  const notificationData = user ? await getNotifications(1, "all") : null;
 
   if (user) {
     // preload the user so that it is accessed faster in <UserDropdown />
@@ -94,7 +98,7 @@ export async function Header({ children, pageTitle }: HeaderProps) {
               </Button>
             </li>
 
-            <li>
+            <li className="relative">
               <Button
                 isSquared
                 href="/notifications"
@@ -103,6 +107,9 @@ export async function Header({ children, pageTitle }: HeaderProps) {
               >
                 <span className="sr-only">Notifications</span>
               </Button>
+              <NotificationBadge
+                initialCount={notificationData?.unreadCount ?? 0}
+              />
             </li>
           </ul>
 

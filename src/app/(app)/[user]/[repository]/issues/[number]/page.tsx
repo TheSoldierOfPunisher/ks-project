@@ -16,11 +16,14 @@ import { CommentForm } from "~/components/comments/comment-form";
 import type { Metadata } from "next";
 import type { PageProps } from "~/lib/types";
 
-type IssueDetailPageProps = PageProps<{
-  user: string;
-  repository: string;
-  number: string;
-}>;
+type IssueDetailPageProps = PageProps<
+  {
+    user: string;
+    repository: string;
+    number: string;
+  },
+  { commentsPage: string }
+>;
 
 const issueParamsSchema = z.object({
   number: preprocess((arg) => Number(arg), z.number()),
@@ -53,7 +56,8 @@ export async function generateMetadata({
 }
 
 export default async function IssueDetailPage({
-  params
+  params,
+  searchParams
 }: IssueDetailPageProps) {
   const paramsResult = issueParamsSchema.safeParse(params);
 
@@ -64,6 +68,10 @@ export default async function IssueDetailPage({
   const user = paramsResult.data.user;
   const repo = paramsResult.data.repository;
   const issueNo = paramsResult.data.number;
+  const commentsPage = Math.max(
+    1,
+    Number.parseInt(searchParams?.commentsPage ?? "1", 10) || 1
+  );
 
   const issue = await getSingleIssue(user, repo, issueNo);
   if (!issue) {
@@ -129,6 +137,7 @@ export default async function IssueDetailPage({
         />
         <CommentList
           issueId={issue.id}
+          page={commentsPage}
           pathname={`/${user}/${repo}/issues/${issueNo}`}
           renderMarkdownAction={async (content, repositoryPath) => {
             "use server";

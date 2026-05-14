@@ -36,6 +36,8 @@ export const comments = pgTable(
     id: serial("id").primaryKey(),
     content: text("content").notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    deleted_at: timestamp("deleted_at"),
     author_id: integer("author_id").references(() => users.id, {
       onDelete: "set null"
     }),
@@ -94,6 +96,16 @@ export const commentRevisions = pgTable("comment_revisions", {
     .references(() => comments.id, {
       onDelete: "cascade"
     })
+    .notNull(),
+  revised_by_username: varchar("revised_by_username", {
+    length: 255
+  })
+    .default("unknown")
+    .notNull(),
+  revised_by_avatar_url: varchar("revised_by_avatar_url", {
+    length: 255
+  })
+    .default("")
     .notNull(),
   updated_content: text("updated_content").notNull()
 });
