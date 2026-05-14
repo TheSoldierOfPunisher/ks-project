@@ -1,11 +1,53 @@
 import Link from "next/link";
 import { markNotificationAsRead } from "~/actions/notification.action";
+import { Button } from "~/components/button";
 
 export function NotificationItem({ notification }: { notification: any }) {
-  return <div className="border border-neutral rounded-md p-3">
-    <div className="text-sm font-semibold">{notification.title}</div>
-    <div className="text-xs text-grey">{notification.body}</div>
-    {notification.issue_id ? <Link href={`/issues/${notification.issue_id}`} className="text-xs underline">Open context</Link> : null}
-    {!notification.read_at ? <form action={() => markNotificationAsRead(notification.id)}><button className="text-xs mt-2">Mark as read</button></form> : null}
-  </div>;
+  const repository = notification.issue?.repository;
+  const issueHref =
+    repository && notification.issue
+      ? `/${repository.creator?.username ?? "repositories"}/${repository.name}/issues/${notification.issue.number}${notification.comment_id ? `#comment-${notification.comment_id}` : ""}`
+      : null;
+
+  return (
+    <article
+      className="rounded-md border border-neutral p-3"
+      aria-label={notification.title}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm font-semibold">
+            {!notification.read_at ? (
+              <span className="text-accent">● </span>
+            ) : null}
+            {notification.title}
+          </div>
+          <div className="text-xs text-grey">
+            {notification.actor?.username
+              ? `@${notification.actor.username} · `
+              : null}
+            {new Date(notification.created_at).toLocaleString()}
+          </div>
+        </div>
+        {!notification.read_at ? (
+          <form action={markNotificationAsRead.bind(null, notification.id)}>
+            <Button type="submit" variant="ghost">
+              Mark as read
+            </Button>
+          </form>
+        ) : null}
+      </div>
+      {notification.body ? (
+        <p className="mt-2 text-sm text-grey">{notification.body}</p>
+      ) : null}
+      {issueHref ? (
+        <Link
+          href={issueHref}
+          className="mt-2 inline-flex text-sm text-accent underline"
+        >
+          Open context
+        </Link>
+      ) : null}
+    </article>
+  );
 }

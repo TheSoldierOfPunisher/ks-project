@@ -26,6 +26,17 @@ export const CacheKeys = {
     props.repo,
     props.number
   ],
+  comment: (props: { id: number; updatedAt: number | string | Date }) => [
+    "COMMENT",
+    props.id,
+    new Date(props.updatedAt).getTime()
+  ],
+  notifications: (props: { userId: number; filter: string; page: number }) => [
+    "NOTIFICATIONS",
+    props.userId,
+    props.filter,
+    props.page
+  ],
   geo: (ip: string) => ["GEO", ip],
   markdownPreview: (props: {
     repositoryPath: `${string}/${string}`;

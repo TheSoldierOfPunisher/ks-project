@@ -7,6 +7,7 @@ import { MarkdownIcon } from "@primer/octicons-react";
 import { Button } from "~/components/button";
 import { MarkdownEditorPreview } from "~/components/markdown-editor/markdown-editor-preview";
 import { MarkdownEditorToolbar } from "~/components/markdown-editor/markdown-editor-toolbar";
+import { MentionAutocomplete } from "~/components/comments/mention-autocomplete";
 
 // utils
 import { clsx, isValidURL } from "~/lib/shared/utils.shared";
@@ -23,6 +24,14 @@ export type MarkdownEditorProps = Omit<TextareaProps, "value"> & {
     content: string,
     repositoryPath: `${string}/${string}`
   ) => Promise<React.JSX.Element>;
+  mentionSuggestionsAction?: (query: string) => Promise<
+    Array<{
+      id: number;
+      username: string;
+      avatar_url: string;
+      name: string | null;
+    }>
+  >;
 };
 
 const TABS = {
@@ -40,6 +49,7 @@ export function MarkdownEditor({
   label,
   defaultValue,
   renderMarkdownAction,
+  mentionSuggestionsAction,
   ...props
 }: MarkdownEditorProps) {
   const params = useTypedParams(
@@ -181,33 +191,40 @@ export function MarkdownEditor({
               />
             </Tabs.List>
 
-            <div className="p-2 bg-backdrop rounded-b-md">
+            <div className="relative p-2 bg-backdrop rounded-b-md">
               <Tabs.Content value={TABS.EDITOR} asChild>
-                <Textarea
-                  rows={12}
-                  {...props}
-                  defaultValue={lastSavedTextContent}
-                  label={label}
-                  onPaste={(ev) => {
-                    const isEventHandled = pasteLinkToTextarea(
-                      ev.clipboardData.getData("text/plain")
-                    );
+                <div className="relative">
+                  <Textarea
+                    rows={12}
+                    {...props}
+                    defaultValue={lastSavedTextContent}
+                    label={label}
+                    onPaste={(ev) => {
+                      const isEventHandled = pasteLinkToTextarea(
+                        ev.clipboardData.getData("text/plain")
+                      );
 
-                    if (isEventHandled) ev.preventDefault();
-                  }}
-                  className="text-sm"
-                  name={selectedTab === "EDITOR" ? props.name : ""}
-                  hideLabel
-                  ref={(ref) => {
-                    textAreaRef.current = ref;
-                    if (ref) {
-                      enableTabToIndent(ref);
-                    }
-                  }}
-                  style={{
-                    height: textAreaHeight > 0 ? `${textAreaHeight}px` : "auto"
-                  }}
-                />
+                      if (isEventHandled) ev.preventDefault();
+                    }}
+                    className="text-sm"
+                    name={selectedTab === "EDITOR" ? props.name : ""}
+                    hideLabel
+                    ref={(ref) => {
+                      textAreaRef.current = ref;
+                      if (ref) {
+                        enableTabToIndent(ref);
+                      }
+                    }}
+                    style={{
+                      height:
+                        textAreaHeight > 0 ? `${textAreaHeight}px` : "auto"
+                    }}
+                  />
+                  <MentionAutocomplete
+                    textareaRef={textAreaRef}
+                    searchAction={mentionSuggestionsAction}
+                  />
+                </div>
               </Tabs.Content>
               <Tabs.Content
                 value={TABS.PREVIEW}
